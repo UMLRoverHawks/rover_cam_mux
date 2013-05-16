@@ -1,0 +1,16 @@
+<launch>
+  <node pkg="rosbag" type="play" name="rosbag0" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw0"/>
+  </node>
+  <node pkg="rosbag" type="play" name="rosbag1" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw1"/>
+  </node>
+
+  <node name="image_view0" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_raw0"/>
+  </node>
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_raw1"/>
+  </node>
+
+</launch>

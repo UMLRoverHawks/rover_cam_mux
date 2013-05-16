@@ -1,0 +1,8 @@
+<launch>
+
+  <!-- visualization of subscribed topics -->
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect1"/>
+  </node>
+   
+</launch>

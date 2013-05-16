@@ -1,0 +1,16 @@
+<launch>
+
+  <!-- BAG file output (standin for live cameras) -->
+  <node pkg="rosbag" type="play" name="rosbag0" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw"/>
+    <!--remap from="image" to="/image_raw"/-->
+  </node>
+
+  <!-- visualization of subscribed topics -->
+  <node name="image_view0" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect0"/>
+    <!--remap from="image" to="/image_detect"/-->
+    <remap from="image" to="/image_detect_ui0"/>
+  </node>
+   
+</launch>

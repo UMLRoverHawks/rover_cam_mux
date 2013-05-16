@@ -1,0 +1,4 @@
+$ rostopic pub -r 10 my_topic std_msgs/String "hello there"
+
+
+(publishes at a rate of 10Hz)

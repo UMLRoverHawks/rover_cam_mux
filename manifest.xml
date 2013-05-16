@@ -1,0 +1,22 @@
+<package>
+  <description brief="rover_cam_mux">
+
+     rover_cam_mux
+
+  </description>
+  <author>csrobot</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/rover_cam_mux</url>
+  
+  <depend package="rospy"/>
+  <depend package="sensor_msgs"/>
+  <depend package="cv_bridge"/>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+  <depend package="image_transport"/>
+  <depend package="rover_cam_detect"/>
+
+</package>
+
+

@@ -1,0 +1,34 @@
+<launch>
+
+  <!-- BAG file output (standin for live cameras) -->
+  <node pkg="rosbag" type="play" name="rosbag0" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw0"/>
+  </node>
+  <node pkg="rosbag" type="play" name="rosbag1" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw1"/>
+  </node>
+  <node pkg="rosbag" type="play" name="rosbag2" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw2"/>
+  </node>
+  <node pkg="rosbag" type="play" name="rosbag3" output="screen" args="-l /home/csrobot/ros_bag_files/test.bag">
+    <remap from="image" to="/image_raw3"/>
+  </node>
+
+
+  <!-- visualization of subscribed topics -->
+  <node name="image_view0" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect0"/>
+  </node>
+   
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect1"/>
+  </node>
+  <node name="image_view2" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect2"/>
+  </node>
+   
+  <node name="image_view3" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_detect3"/>
+  </node>
+
+</launch>

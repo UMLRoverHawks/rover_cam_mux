@@ -1,0 +1,11 @@
+<launch>
+
+  <!-- start multi-plexer (mux) -->
+  <node name="rover_cam_mux" pkg="rover_cam_mux" type="rover_cam_mux" respawn="false" output="screen"/>
+
+  <!-- visualization of subscribed topics -->
+  <node name="image_view1" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/image_raw1"/>
+  </node>
+   
+</launch>
