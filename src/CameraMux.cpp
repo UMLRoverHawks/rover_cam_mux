@@ -21,7 +21,6 @@ class CameraMux
 private:
    // SwitchableCameras - independent nodes
    SwitchableCamera *cams_[];
-  //SwitchableCamera cams_[4];
   static const int num_cameras_ = 4;
 
   // sub for camera select
@@ -30,6 +29,7 @@ private:
 
   // pub/sub for rock detections
   ros::Subscriber detect_sub_ ;
+  // inelegant replication
   ros::Publisher detect_pub_; 
 public:
  
@@ -40,20 +40,11 @@ public:
     // camera select msg sub 
     select_msg_sub_ = nh_.subscribe("cam_select", 1000, &CameraMux::selectCb, this );
     
-    // rock detection topic sub 
+    // rock detection topic sub
+    // TODO: replicate for muliple streams of detects - is there
+    // a better way rather than cut/paste?
     detect_sub_ = nh_.subscribe("detects", 1000, &CameraMux::detectCb, this );
     detect_pub_ = nh_.advertise<rover_cam_detect::imgDataArray>( "detects_ui", 1000 ) ; 
-
-/*
-    cams_[0].setPublisher("image_detect0");
-    cams_[0].setSubscriber("image_raw0");
-    cams_[1].setPublisher("image_detect1");
-    cams_[1].setSubscriber("image_raw1");
-    cams_[2].setPublisher("image_detect2");
-    cams_[2].setSubscriber("image_raw2");
-    cams_[3].setPublisher("image_detect3");
-    cams_[3].setSubscriber("image_raw3");
-*/
 
     std::stringstream pub_topic; 
     std::stringstream sub_topic;
@@ -61,12 +52,10 @@ public:
     for(int i=0; i<num_cameras_; ++i)
     {
 	// Pub/sub topic names
-	sub_topic << "image_raw" << i;	
-	//sub_topic << "image_detect" << i;	
-	//sub_topic << "image_detect"; // from blob detect	
-	pub_topic << "image_raw_mux" << i;	
+	sub_topic << "/camera" << i << "/image_raw";	
+	pub_topic << "/camera_stream" << i;	
 
-	cams_[i] = new SwitchableCamera();	
+	cams_[i] = new SwitchableCamera(i);	
 	cams_[i]->setStatus(1); // status 1 = switched on
      	cams_[i]->setSubscriber(sub_topic.str().c_str());
      	cams_[i]->setPublisher(pub_topic.str().c_str());
@@ -90,11 +79,17 @@ public:
 
   // camera_select callback
   inline void selectCb(const std_msgs::Int16::ConstPtr& msg)
-  //void selectCb(const std_msgs::String::ConstPtr& msg)
   {
-	// loop over SwitchableCamera status messages    
-	//ROS_INFO("Select cameras: %s", msg->data.c_str());
-	ROS_INFO("Select cameras: %d", msg->data);
+	// loop over SwitchableCamera status messages 
+	ROS_INFO("Select these cameras: %d", msg->data);
+	int onMask = 0x01; 
+
+	for(int i=0; i<num_cameras_; ++i)
+    	{
+	    // do stuff with cam_leec
+   	    cams_[i]->setStatus( (msg >> cams_[i]->getId() ) & onMask ) ;	
+	}
+
   }
 
 

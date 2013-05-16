@@ -37,27 +37,25 @@ public:
     void setStatus(const int status)
     {
 	status_ = status;
-	ROS_INFO("Camera %d: status = %d", camId_, status_);
+
+	if(status)
+	{
+	   ROS_INFO("Camera %d ON (status = %d)", camId_, status_);
+	}
+	else
+	{
+	    ROS_INFO("Camera %d OFF (status = %d)", camId_, status_);
+	}
     };
 
+    int getId() const { return camId_; }
+	 
     void imageCb(const sensor_msgs::ImageConstPtr& msg)
     {
-    	cv_bridge::CvImagePtr cv_ptr;
-   	
-	try
-    	{
-            cv_ptr = cv_bridge::toCvCopy(msg, enc::BGR8);
-    	}
-    	catch (cv_bridge::Exception& e)
-    	{
-      	    ROS_ERROR("cv_bridge exception: %s", e.what());
-      	    return;
-    	}
-
 	// publish!
 	if(status_)
 	{
-            image_pub_.publish(cv_ptr->toImageMsg());
+            image_pub_.publish(msg);
 	}
     }
 
