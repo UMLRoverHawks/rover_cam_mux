@@ -15,7 +15,7 @@
   <depend package="roscpp"/>
   <depend package="std_msgs"/>
   <depend package="image_transport"/>
-  <depend package="rover_cam_detect"/>
+  <depend package="rock_publisher"/>
 
 </package>
 

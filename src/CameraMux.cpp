@@ -10,8 +10,8 @@
 #include <sstream>
 
 // rock detection messages
-#include <rover_cam_detect/imgData.h>
-#include <rover_cam_detect/imgDataArray.h>
+#include <rock_publisher/imgData.h>
+#include <rock_publisher/imgDataArray.h>
 
 // individual camera nodes
 #include "SwitchableCamera.h"
