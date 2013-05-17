@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include "std_msgs/String.h"
 #include "std_msgs/Int16.h"
+#include "std_msgs/Byte.h"
 
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/image_encodings.h>
@@ -52,7 +53,7 @@ public:
     for(int i=0; i<num_cameras_; ++i)
     {
 	// Pub/sub topic names
-	sub_topic << "/camera" << i << "/image_raw";	
+	sub_topic << "/camera" << i << "/image_raw/theora";	
 	pub_topic << "/camera_stream" << i;	
 
 	cams_[i] = new SwitchableCamera(i);	
@@ -78,16 +79,18 @@ public:
 
 
   // camera_select callback
-  inline void selectCb(const std_msgs::Int16::ConstPtr& msg)
+  //inline void selectCb(const std_msgs::Int16::ConstPtr& msg)
+  inline void selectCb(const std_msgs::Byte::ConstPtr& msg)
   {
 	// loop over SwitchableCamera status messages 
 	ROS_INFO("Select these cameras: %d", msg->data);
-	int onMask = 0x01; 
+
+	static const int onMask = 0x01; 
+	char byteMsg =  msg->data;
 
 	for(int i=0; i<num_cameras_; ++i)
     	{
-	    // do stuff with cam_leec
-   	    cams_[i]->setStatus( (msg >> cams_[i]->getId() ) & onMask ) ;	
+   	    cams_[i]->setStatus( (byteMsg >> cams_[i]->getId() ) & onMask ) ;	
 	}
 
   }
@@ -98,6 +101,7 @@ public:
   {
     for ( int i = 0 ; i < msg->rockData.size() ; i++ ) 
     {
+      // just a reference to existing message.
       const rover_cam_detect::imgData &data = msg->rockData[i] ;
       ROS_INFO( "x: %d, y: %d, width: %d, height: %d",
                data.x, data.y, data.width, data.height ) ;
