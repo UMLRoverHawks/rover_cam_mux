@@ -45,7 +45,7 @@ public:
     // TODO: replicate for muliple streams of detects - is there
     // a better way rather than cut/paste?
     detect_sub_ = nh_.subscribe("detects", 1000, &CameraMux::detectCb, this );
-    detect_pub_ = nh_.advertise<rover_cam_detect::imgDataArray>( "detects_ui", 1000 ) ; 
+    detect_pub_ = nh_.advertise<rock_publisher::imgDataArray>( "detects_ui", 1000 ) ; 
 
     std::stringstream pub_topic; 
     std::stringstream sub_topic;
@@ -53,8 +53,8 @@ public:
     for(int i=0; i<num_cameras_; ++i)
     {
 	// Pub/sub topic names
-	sub_topic << "/camera" << i << "/image_raw/theora";	
-	pub_topic << "/camera_stream" << i;	
+	sub_topic << "/camera" << i << "/image_raw";	
+	pub_topic << "/camera" << i << "_stream/image_raw";	
 
 	cams_[i] = new SwitchableCamera(i);	
 	cams_[i]->setStatus(1); // status 1 = switched on
@@ -79,7 +79,6 @@ public:
 
 
   // camera_select callback
-  //inline void selectCb(const std_msgs::Int16::ConstPtr& msg)
   inline void selectCb(const std_msgs::Byte::ConstPtr& msg)
   {
 	// loop over SwitchableCamera status messages 
@@ -97,12 +96,12 @@ public:
 
 
 
-  inline void detectCb(const rover_cam_detect::imgDataArray::ConstPtr& msg)
+  inline void detectCb(const rock_publisher::imgDataArray::ConstPtr& msg)
   {
     for ( int i = 0 ; i < msg->rockData.size() ; i++ ) 
     {
       // just a reference to existing message.
-      const rover_cam_detect::imgData &data = msg->rockData[i] ;
+      const rock_publisher::imgData &data = msg->rockData[i] ;
       ROS_INFO( "x: %d, y: %d, width: %d, height: %d",
                data.x, data.y, data.width, data.height ) ;
      
