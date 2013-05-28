@@ -16,6 +16,8 @@ public:
     SwitchableCamera(int camId = -1)
         : it_(nh_), camId_(camId), status_(1)
     {
+
+	setStatus(status_);
     }
 
     void setPublisher(const std::string &topic_name) 

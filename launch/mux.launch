@@ -1,0 +1,3 @@
+<launch>
+  <node name="rover_cam_mux" type="rover_cam_mux" pkg="rover_cam_mux" output="screen" />
+</launch>
