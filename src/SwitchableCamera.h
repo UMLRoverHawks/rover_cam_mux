@@ -55,19 +55,17 @@ public:
 	 
     void imageCb(const sensor_msgs::ImageConstPtr& msg)
     {
+        static cv_bridge::CvImagePtr cv_in,cv_out;
+        cv_in = cv_bridge::toCvCopy(msg, enc::BGR8);
 	    // publish!
         if(status_)
         {
             // swap R and B color channels
-            // make a new message that looks like the one that came in
-            cv_bridge::CvImagePtr cv_in = cv_bridge::toCvCopy(msg, enc::BGR8);
-            cv_bridge::CvImage cv_out;
-            cv_out.header   = cv_in->header;
-            cv_out.encoding = cv_in->encoding;
-            cv_out.image    = cv_in->image.clone(); // instantiates image
-            cv::cvtColor(cv_in->image, cv_out.image, CV_BGR2RGB);
-
-            image_pub_.publish(cv_out.toImageMsg());
+            //cv_bridge::CvImagePtr cv_in = cv_bridge::toCvCopy(msg, enc::BGR8);
+            if (!cv_out)
+                cv_out = cv_bridge::toCvCopy(msg, enc::BGR8);
+            cv::cvtColor(cv_in->image, cv_out->image, CV_BGR2RGB);
+            image_pub_.publish(cv_out->toImageMsg());
         }
      }
 
