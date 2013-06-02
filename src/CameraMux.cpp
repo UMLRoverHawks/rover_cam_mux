@@ -39,13 +39,13 @@ public:
   {
 
     // camera select msg sub 
-    select_msg_sub_ = nh_.subscribe("cam_select", 1000, &CameraMux::selectCb, this );
+    select_msg_sub_ = nh_.subscribe("cam_select", 5, &CameraMux::selectCb, this );
     
     // rock detection topic sub
     // TODO: replicate for muliple streams of detects - is there
     // a better way rather than cut/paste?
-    detect_sub_ = nh_.subscribe("detects", 1000, &CameraMux::detectCb, this );
-    detect_pub_ = nh_.advertise<rock_publisher::imgDataArray>( "detects_ui", 1000 ) ; 
+    //detect_sub_ = nh_.subscribe("detects", 1000, &CameraMux::detectCb, this );
+    //detect_pub_ = nh_.advertise<rock_publisher::imgDataArray>( "detects_ui", 1000 ) ; 
 
     std::stringstream pub_topic; 
     std::stringstream sub_topic;
@@ -118,6 +118,9 @@ int main(int argc, char** argv)
 //  static const int MAX_CAMERAS = 4;
   //CameraMux cmux(MAX_CAMERAS);
   CameraMux cmux;
-  ros::spin();
+//  ros::spin();
+  ros::AsyncSpinner spinner(2); // Use 4 threads
+  spinner.start();
+  ros::waitForShutdown();
   return 0;
 }
