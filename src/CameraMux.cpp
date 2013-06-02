@@ -80,12 +80,11 @@ public:
 	// loop over SwitchableCamera status messages 
 	ROS_INFO("Select these cameras: %d", msg->data);
 
-	static const int onMask = 0x01; 
-	char byteMsg =  msg->data;
+	char byteMsg =  msg->data | 1;
 
 	for(int i=0; i<num_cameras_; ++i)
     	{
-   	    cams_[i]->setStatus( (byteMsg >> cams_[i]->getId() ) & onMask ) ;	
+   	    cams_[i]->setStatus( (byteMsg >> cams_[i]->getId() ) & 1 ) ;	
 	}
     }
 };
@@ -97,8 +96,7 @@ int main(int argc, char** argv)
   //CameraMux cmux(MAX_CAMERAS);
   CameraMux cmux;
 //  ros::spin();
-  ros::AsyncSpinner spinner(2); // Use 4 threads
-  spinner.start();
-  ros::waitForShutdown();
+  ros::MultiThreadedSpinner spinner(4); // Use 4 threads
+  spinner.spin();
   return 0;
 }
