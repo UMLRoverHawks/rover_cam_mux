@@ -39,16 +39,12 @@ public:
   {
 
     // camera select msg sub 
-    select_msg_sub_ = nh_.subscribe("cam_select", 5, &CameraMux::selectCb, this );
+    select_msg_sub_ = nh_.subscribe("cam_select", 1, &CameraMux::selectCb, this );
     
     // rock detection topic sub
     // TODO: replicate for muliple streams of detects - is there
     // a better way rather than cut/paste?
-    //detect_sub_ = nh_.subscribe("detects", 1000, &CameraMux::detectCb, this );
-    //detect_pub_ = nh_.advertise<rock_publisher::imgDataArray>( "detects_ui", 1000 ) ; 
-
-    std::stringstream pub_topic; 
-    std::stringstream sub_topic;
+    std::stringstream sub_topic, pub_topic;
 
     for(int i=0; i<num_cameras_; ++i)
     {
@@ -91,25 +87,7 @@ public:
     	{
    	    cams_[i]->setStatus( (byteMsg >> cams_[i]->getId() ) & onMask ) ;	
 	}
-
-  }
-
-
-
-  inline void detectCb(const rock_publisher::imgDataArray::ConstPtr& msg)
-  {
-    for ( int i = 0 ; i < msg->rockData.size() ; i++ ) 
-    {
-      // just a reference to existing message.
-      const rock_publisher::imgData &data = msg->rockData[i] ;
-      ROS_INFO( "x: %d, y: %d, width: %d, height: %d",
-               data.x, data.y, data.width, data.height ) ;
-     
-      detect_pub_.publish(msg) ;
     }
-  }
-
-
 };
 
 int main(int argc, char** argv)
