@@ -55,16 +55,73 @@ public:
 	 
     void imageCb(const sensor_msgs::ImageConstPtr& msg)
     {
-        static cv_bridge::CvImagePtr cv_in,cv_out;
-        cv_in = cv_bridge::toCvCopy(msg, enc::BGR8);
-	    // publish!
+        //static cv_bridge::CvImagePtr cv_in,cv_out;
+        static cv_bridge::CvImagePtr cv_out;
+	static cv_bridge::CvImageConstPtr cv_in;
+        //cv_in = cv_bridge::toCvCopy(msg);
+	unsigned char *dataOut = 0; 
+	cv_bridge::CvImage cim;
+        
+	// publish!
         if(status_)
         {
-            // swap R and B color channels
-            //cv_bridge::CvImagePtr cv_in = cv_bridge::toCvCopy(msg, enc::BGR8);
-            if (!cv_out)
+	   // copy the first image buffer once
+	   if (!cv_out)
+	   {
                 cv_out = cv_bridge::toCvCopy(msg, enc::BGR8);
-            cv::cvtColor(cv_in->image, cv_out->image, CV_BGR2RGB);
+	        dataOut = reinterpret_cast<unsigned char *>
+                                           (cv_out->image.data);
+		ROS_INFO("cv out is a-ok");
+	   }
+ 
+     	   try
+           {
+	      // share image buffer, don't copy
+              cv_in = cv_bridge::toCvShare(msg, enc::BGR8);
+
+	      if(!cv_in)
+              	ROS_INFO("cv in not a-ok");
+              ROS_INFO("cv in  a-ok");
+	      unsigned char *dataIn = reinterpret_cast<unsigned char *>
+                                           (cv_in->image.data); 
+              
+		// i rows, j cols 
+               	for(int i=0; i<cv_in->image.rows; ++i) 
+	       	{
+               	  for(int j=0; j<cv_in->image.cols; ++j) 
+		  {
+	
+			int pixIdx = 3*(i*cv_in->image.rows + j);
+/*			unsigned char r = dataIn[pixIdx];
+			unsigned char g = dataIn[pixIdx+1];
+			unsigned char b = dataIn[pixIdx + 2];
+*/
+			dataOut[pixIdx] = 0;
+			dataOut[pixIdx + 1] = 0;
+			dataOut[pixIdx + 2] = 0;
+			//dataOut[pixIdx] = b;
+			//dataOut[pixIdx + 1] = g;
+			//dataOut[pixIdx + 2] = r;
+			//data[pixIdx] = r;
+			//data[pixIdx + 2] = b;
+			//data[pixIdx] = 0;
+			//data[pixIdx + 2] = 0;
+	
+		  }
+			
+		}
+		
+           }
+           catch (cv_bridge::Exception& e)
+          {
+               ROS_ERROR("cv_bridge exception: %s", e.what());
+          }
+   
+            // swap R and B color channels
+            //if (!cv_out)
+                //cv_out = cv_bridge::toCvCopy(msg, enc::BGR8);
+            //cv::cvtColor(cv_in->image, cv_in->image, CV_RGB2BGR);
+            //image_pub_.publish(cv_in->toImageMsg());
             image_pub_.publish(cv_out->toImageMsg());
         }
      }
