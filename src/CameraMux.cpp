@@ -22,7 +22,8 @@ class CameraMux
 private:
    // SwitchableCameras - independent nodes
    SwitchableCamera *cams_[];
-  static const int num_cameras_ = 4;
+   static const int num_cameras_ = 3;
+   //static const int num_cameras_ = 4;
 
   // sub for camera select
   ros::NodeHandle nh_;
@@ -49,7 +50,8 @@ public:
     for(int i=0; i<num_cameras_; ++i)
     {
 	// Pub/sub topic names
-	sub_topic << "/camera" << i << "/image_raw";	
+	//sub_topic << "/camera" << i << "/image_raw";	
+	sub_topic << "/camera" << i << "/image_detect";	
 	pub_topic << "/camera" << i << "_stream/image_raw";	
 
 	cams_[i] = new SwitchableCamera(i);	

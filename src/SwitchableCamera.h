@@ -68,6 +68,7 @@ public:
             cv::cvtColor(cv_in->image, cv_out.image, CV_BGR2RGB);
 
             image_pub_.publish(cv_out.toImageMsg());
+	
         }
      }
 
